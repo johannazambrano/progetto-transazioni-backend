@@ -1,0 +1,33 @@
+quarkus:
+  application:
+    name: expense-pulse-backend
+    version: 1.0.0-SNAPSHOT
+  http:
+    port: 9091
+    root-path: /api/v1
+    cors:
+      enabled: true
+      origins: http://localhost:4200,http://localhost:5173
+      methods: GET,PUT,POST,DELETE,OPTIONS,PATCH
+      headers: origin,accept,authorization,content-type,x-requested-with
+      exposed-headers: Content-Disposition
+      access-control-max-age: 24H
+      # access-control-allow-credentials: true  # <— sblocca cookie/authorization cross-site se necessario
+  log:
+    level: INFO
+    console:
+      enable: true
+      level: DEBUG
+      format: "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c{3.}] (%t) %s%e%n"
+    category:
+      "org.acme":
+        level: DEBUG
+  mongodb:
+    connection-string: mongodb://localhost:27017
+    database: expense-pulse
+  swagger-ui:
+    always-include: true
+    enable: true
+    path: /swagger-ui
+  smallrye-openapi:
+    path: /openapi
