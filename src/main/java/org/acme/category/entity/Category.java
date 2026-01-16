@@ -17,4 +17,6 @@ public class Category {
     private ObjectId id;
     private String descrizione;
     private String codice;
+    public Double budget;
+    public String colore;
 }

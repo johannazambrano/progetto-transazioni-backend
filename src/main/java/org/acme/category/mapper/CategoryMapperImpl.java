@@ -16,6 +16,8 @@ public class CategoryMapperImpl extends AbstractMapperComponent<CategoryDTO, Cat
             CategoryDTO dto = CategoryDTO.builder()
                     .descrizione(entity.getDescrizione())
                     .codice(entity.getCodice())
+                    .budget(entity.getBudget())
+                    .colore(entity.getColore())
                     .id(entity.getId().toHexString())
                     .build();
             return dto;
@@ -36,6 +38,8 @@ public class CategoryMapperImpl extends AbstractMapperComponent<CategoryDTO, Cat
 
                 entity.setDescrizione(dto.getDescrizione());
                 entity.setCodice(dto.getCodice());
+                entity.setBudget(dto.getBudget());
+                entity.setColore(dto.getColore());
 
                 return entity;
             }else{

@@ -18,6 +18,8 @@ public class CategoryDTO {
     private String id;
     private String descrizione;
     private String codice;
+    public Double budget;
+    public String colore;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class CategoryDTOBuilder {}
