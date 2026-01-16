@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.apachecommons.CommonsLog;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
 import org.acme.api.dto.PaginazioneDTO;
+import org.acme.exception.ServiceException;
 import org.acme.transaction.entity.Transaction;
 import org.acme.transaction.entity.TransactionResponse;
 
@@ -14,13 +15,22 @@ import org.acme.transaction.entity.TransactionResponse;
 @CommonsLog
 public class TransactionRepository implements PanacheMongoRepository<Transaction> {
 
-    public TransactionResponse ricercaTransaction(FiltroRicercaTransactionDTO filtroTransactionDTO) {
+    public TransactionResponse ricercaTransaction(FiltroRicercaTransactionDTO filtroTransactionDTO) throws ServiceException {
         log.info("[TransactionRepository.ricercaTransaction] filtro: " + filtroTransactionDTO);
 
         String title = filtroTransactionDTO.getTitle();
         Double amount = filtroTransactionDTO.getAmount();
         String category = filtroTransactionDTO.getCategory();
-        String date = filtroTransactionDTO.getDate();
+        String startDate = filtroTransactionDTO.getStartDate();
+        String endDate = filtroTransactionDTO.getEndDate();
+        
+        // Validazione delle date
+        if (startDate != null && !startDate.isBlank() && endDate != null && !endDate.isBlank()) {
+            if (startDate.compareTo(endDate) > 0) {
+                throw new ServiceException("La data di inizio non può essere successiva alla data di fine.");
+            }
+        }
+        
         TransactionResponse transactionResponse = new TransactionResponse();
 
         StringBuilder query = new StringBuilder();
@@ -30,13 +40,22 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
             query.append("title like :title");
             params.and("title", "(?i).*" + title + ".*");
         }
-
-        if (date != null && !date.isBlank()) {
+        
+        // Gestione range date
+        if (startDate != null && !startDate.isBlank()) {
             if (!query.isEmpty()) {
                 query.append(" and ");
             }
-            query.append("date like :date");
-            params.and("date", "(?i).*" + date + ".*");
+            query.append("date >= :startDate");
+            params.and("startDate", startDate);
+        }
+
+        if (endDate != null && !endDate.isBlank()) {
+            if (!query.isEmpty()) {
+                query.append(" and ");
+            }
+            query.append("date <= :endDate");
+            params.and("endDate", endDate);
         }
 
         if (category != null && !category.isBlank()) {

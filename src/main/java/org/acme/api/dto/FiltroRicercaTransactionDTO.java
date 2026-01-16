@@ -11,6 +11,7 @@ public class FiltroRicercaTransactionDTO {
     private String title;
     private Double amount;
     private String category;
-    private String date;
+    private String startDate;
+    private String endDate;
     private PaginazioneDTO paginazione;
 }
