@@ -1,3 +1,8 @@
+"%prod":
+  quarkus:
+    mongodb:
+      connection-string: mongodb://mongo:27017/expense-pulse
+      database: expense-pulse
 quarkus:
   application:
     name: expense-pulse-backend
