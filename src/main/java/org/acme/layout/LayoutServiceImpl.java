@@ -38,6 +38,21 @@ public class LayoutServiceImpl implements LayoutService {
     }
 
     @Override
+    public LayoutDTO findLayoutById(String id) throws ServiceException {
+        try {
+            log.info("Ricerca layout per ID: " + id);
+            Layout layout = layoutRepository.findById(new ObjectId(id));
+            if (layout == null) {
+                throw new NotFoundException("Layout con ID " + id + " non trovato.");
+            }
+            return layoutMapper.convertEntityToDto(layout);
+        } catch (Exception e) {
+            log.error("Errore durante la ricerca del layout per ID", e);
+            throw new ServiceException("Errore durante la ricerca del layout per ID: " + e.getMessage());
+        }
+    }
+
+    @Override
     public LayoutDTO findDefaultLayout() throws ServiceException {
         try {
             log.info("Ricerca layout di default");
