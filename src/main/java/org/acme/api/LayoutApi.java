@@ -49,13 +49,12 @@ public class LayoutApi {
             @APIResponse(responseCode = "500", description = "Errore interno del server")
     })
     public Response getLayoutById(@PathParam("id") String id) throws ApplicationException {
-        // Nota: LayoutService non ha findById esplicito nell'interfaccia che ho creato prima, 
-        // ma potremmo aggiungerlo o usare findLayoutByName se l'ID è il nome (ma qui è ObjectId).
-        // Per ora uso una logica placeholder o aggiungo il metodo al service.
-        // Aspetta, ho dimenticato di aggiungere findById all'interfaccia LayoutService!
-        // Lo aggiungerò dopo. Per ora commento o uso un workaround.
-        // Anzi, meglio correggere il service.
-        return Response.status(Response.Status.NOT_IMPLEMENTED).entity("Metodo findById non ancora implementato nel service").build();
+        try {
+            LayoutDTO layout = layoutService.findLayoutById(id);
+            return Response.ok(layout).build();
+        } catch (ServiceException e) {
+            throw new ApplicationException(e);
+        }
     }
 
     @GET
