@@ -32,7 +32,7 @@ public class LayoutServiceImpl implements LayoutService {
             }
             return layoutMapper.convertEntityToDto(layout);
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del layout per nome", e);
+            log.error("Errore durante la ricerca del layout per nome ", e);
             throw new ServiceException("Errore durante la ricerca del layout per nome: " + e.getMessage());
         }
     }
@@ -47,7 +47,7 @@ public class LayoutServiceImpl implements LayoutService {
             }
             return layoutMapper.convertEntityToDto(layout);
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del layout per ID", e);
+            log.error("Errore durante la ricerca del layout per ID ", e);
             throw new ServiceException("Errore durante la ricerca del layout per ID: " + e.getMessage());
         }
     }
@@ -62,7 +62,7 @@ public class LayoutServiceImpl implements LayoutService {
             }
             return layoutMapper.convertEntityToDto(layout);
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del layout di default", e);
+            log.error("Errore durante la ricerca del layout di default ", e);
             throw new ServiceException("Errore durante la ricerca del layout di default: " + e.getMessage());
         }
     }
@@ -75,7 +75,7 @@ public class LayoutServiceImpl implements LayoutService {
             layoutRepository.persist(layout);
             return layout.getId().toHexString();
         } catch (Exception e) {
-            log.error("Errore durante la creazione del layout", e);
+            log.error("Errore durante la creazione del layout ", e);
             throw new ServiceException("Errore durante la creazione del layout: " + e.getMessage());
         }
     }
@@ -89,10 +89,11 @@ public class LayoutServiceImpl implements LayoutService {
                 throw new NotFoundException("Layout con id " + id + " non trovato.");
             }
             Layout updatedLayout = layoutMapper.convertDtoToEntity(layoutDTO);
-            updatedLayout.setId(existingLayout.getId()); // Assicura che l'ID non venga cambiato
+            // Assicura che l'ID non venga cambiato
+            updatedLayout.setId(existingLayout.getId());
             layoutRepository.update(updatedLayout);
         } catch (Exception e) {
-            log.error("Errore durante l'aggiornamento del layout", e);
+            log.error("Errore durante l'aggiornamento del layout ", e);
             throw new ServiceException("Errore durante l'aggiornamento del layout: " + e.getMessage());
         }
     }
@@ -106,7 +107,7 @@ public class LayoutServiceImpl implements LayoutService {
                 throw new NotFoundException("Layout con id " + id + " non trovato.");
             }
         } catch (Exception e) {
-            log.error("Errore durante la cancellazione del layout", e);
+            log.error("Errore durante la cancellazione del layout ", e);
             throw new ServiceException("Errore durante la cancellazione del layout: " + e.getMessage());
         }
     }
@@ -118,7 +119,7 @@ public class LayoutServiceImpl implements LayoutService {
             List<Layout> layouts = layoutRepository.listAll();
             return layoutMapper.convertEntityToDto(layouts);
         } catch (Exception e) {
-            log.error("Errore durante il recupero di tutti i layout", e);
+            log.error("Errore durante il recupero di tutti i layout ", e);
             throw new ServiceException("Errore durante il recupero di tutti i layout: " + e.getMessage());
         }
     }

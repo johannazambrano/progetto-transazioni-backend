@@ -35,6 +35,7 @@ public class LayoutApi {
     public Response getAllLayouts() throws ApplicationException {
         try {
             List<LayoutDTO> layouts = layoutService.getAllLayouts();
+            log.info("[LayoutApi.getAllLayouts] recuperata lista layout con successo");
             return Response.ok(layouts).build();
         } catch (ServiceException e) {
             throw new ApplicationException(e);
@@ -58,7 +59,9 @@ public class LayoutApi {
     })
     public Response getDefaultLayout() throws ApplicationException {
         try {
+            log.info("[LayoutApi.getDefaultLayout] recupero del layout di default");
             LayoutDTO layout = layoutService.findDefaultLayout();
+            log.info("[LayoutApi.getDefaultLayout] recuperato layout di default con successo");
             return Response.ok(layout).build();
         } catch (ServiceException e) {
             throw new ApplicationException(e);
@@ -102,7 +105,9 @@ public class LayoutApi {
     })
     public Response createLayout(LayoutDTO layoutDTO) throws ApplicationException {
         try {
+            log.info("[LayoutApi.createLayout] crea layout con DTO: " + layoutDTO);
             String id = layoutService.createLayout(layoutDTO);
+            log.info("[LayoutApi.createLayout] creato layout con id: " + id);
             return Response.created(URI.create("/layouts/" + id)).build();
         } catch (ServiceException e) {
             throw new ApplicationException(e);
@@ -119,7 +124,9 @@ public class LayoutApi {
     })
     public Response updateLayout(@PathParam("id") String id, LayoutDTO layoutDTO) throws ApplicationException {
         try {
+            log.info("[LayoutApi.updateLayout] aggiorna layout con DTO: " + layoutDTO + " e id: " + id);
             layoutService.updateLayout(id, layoutDTO);
+            log.info("[LayoutApi.updateLayout] aggiornato layout con successo con id: " + id);
             return Response.noContent().build();
         } catch (ServiceException e) {
             throw new ApplicationException(e);
@@ -136,7 +143,9 @@ public class LayoutApi {
     })
     public Response deleteLayout(@PathParam("id") String id) throws ApplicationException {
         try {
+            log.info("[LayoutApi.deleyeLayout] elimina layout con id: " + id);
             layoutService.deleteLayout(id);
+            log.info("[LayoutApi.deleteLayout] eliminato layout con successo con id: " + id);
             return Response.noContent().build();
         } catch (ServiceException e) {
             throw new ApplicationException(e);
