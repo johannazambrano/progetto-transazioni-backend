@@ -26,6 +26,7 @@ public class LayoutApi {
     LayoutService layoutService;
 
     @GET
+    @Path("/")
     @Operation(summary = "Recupera tutti i layout", description = "Restituisce una lista di tutti i layout disponibili")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Lista layout recuperata con successo"),
@@ -41,20 +42,10 @@ public class LayoutApi {
     }
 
     @GET
-    @Path("/{id}")
-    @Operation(summary = "Recupera un layout per ID", description = "Restituisce il dettaglio di un layout specifico")
-    @APIResponses(value = {
-            @APIResponse(responseCode = "200", description = "Layout trovato"),
-            @APIResponse(responseCode = "404", description = "Layout non trovato"),
-            @APIResponse(responseCode = "500", description = "Errore interno del server")
-    })
-    public Response getLayoutById(@PathParam("id") String id) throws ApplicationException {
-        try {
-            LayoutDTO layout = layoutService.findLayoutById(id);
-            return Response.ok(layout).build();
-        } catch (ServiceException e) {
-            throw new ApplicationException(e);
-        }
+    @Path("/all")
+    @Operation(summary = "Recupera tutti i layout (alias)", description = "Restituisce una lista di tutti i layout disponibili")
+    public Response getAllLayoutsAlias() throws ApplicationException {
+        return getAllLayouts();
     }
 
     @GET
@@ -75,6 +66,35 @@ public class LayoutApi {
     }
 
     @POST
+    @Path("/reset")
+    @Operation(summary = "Resetta al layout di default", description = "Restituisce il layout di default per l'utente")
+    public Response resetLayout() throws ApplicationException {
+        return getDefaultLayout();
+    }
+
+    @GET
+    @Path("/{id}")
+    @Operation(summary = "Recupera un layout per ID", description = "Restituisce il dettaglio di un layout specifico")
+    @APIResponses(value = {
+            @APIResponse(responseCode = "200", description = "Layout trovato"),
+            @APIResponse(responseCode = "404", description = "Layout non trovato"),
+            @APIResponse(responseCode = "500", description = "Errore interno del server")
+    })
+    public Response getLayoutById(@PathParam("id") String id) throws ApplicationException {
+        try {
+            log.info("[LayoutApi.getLayoutById] Id ricevuto: " + id);
+            if ("default".equals(id)) {
+                return getDefaultLayout();
+            }
+            LayoutDTO layout = layoutService.findLayoutById(id);
+            return Response.ok(layout).build();
+        } catch (ServiceException e) {
+            throw new ApplicationException(e);
+        }
+    }
+
+    @POST
+    @Path("/")
     @Operation(summary = "Crea un nuovo layout", description = "Crea un nuovo layout e restituisce l'ID")
     @APIResponses(value = {
             @APIResponse(responseCode = "201", description = "Layout creato con successo"),
