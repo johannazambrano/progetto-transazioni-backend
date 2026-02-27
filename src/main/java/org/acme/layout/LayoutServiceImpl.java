@@ -3,8 +3,10 @@ package org.acme.layout;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.apachecommons.CommonsLog;
+import org.acme.exception.MapperException;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
+import org.acme.layout.dto.FiltroDTO;
 import org.acme.layout.dto.LayoutDTO;
 import org.acme.layout.entity.Layout;
 import org.acme.layout.mapper.LayoutMapperImpl;
@@ -52,20 +54,20 @@ public class LayoutServiceImpl implements LayoutService {
         }
     }
 
-    @Override
-    public LayoutDTO findDefaultLayout() throws ServiceException {
-        try {
-            log.info("Ricerca layout di default");
-            Layout layout = layoutRepository.findDefaultLayout();
-            if (layout == null) {
-                throw new NotFoundException("Nessun layout di default trovato.");
-            }
-            return layoutMapper.convertEntityToDto(layout);
-        } catch (Exception e) {
-            log.error("Errore durante la ricerca del layout di default ", e);
-            throw new ServiceException("Errore durante la ricerca del layout di default: " + e.getMessage());
-        }
-    }
+//    @Override
+//    public LayoutDTO findDefaultLayout() throws ServiceException {
+//        try {
+//            log.info("Ricerca layout di default");
+//            Layout layout = layoutRepository.findDefaultLayout();
+//            if (layout == null) {
+//                throw new NotFoundException("Nessun layout di default trovato.");
+//            }
+//            return layoutMapper.convertEntityToDto(layout);
+//        } catch (Exception e) {
+//            log.error("Errore durante la ricerca del layout di default ", e);
+//            throw new ServiceException("Errore durante la ricerca del layout di default: " + e.getMessage());
+//        }
+//    }
 
     @Override
     public String createLayout(LayoutDTO layoutDTO) throws ServiceException {
@@ -122,5 +124,21 @@ public class LayoutServiceImpl implements LayoutService {
             log.error("Errore durante il recupero di tutti i layout ", e);
             throw new ServiceException("Errore durante il recupero di tutti i layout: " + e.getMessage());
         }
+    }
+
+    @Override
+    public LayoutDTO findByFiltro(FiltroDTO filtroDto) throws ServiceException {
+        try {
+            log.info("[LayoutServiceImpl.findDefaultLayout] Ricerca layout di default");
+            Layout layout = layoutRepository.findByFilters(filtroDto);
+            if (layout != null) {
+                return layoutMapper.convertEntityToDto(layout);
+            }
+        } catch (Exception e) {
+            log.error("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default ", e);
+            throw new ServiceException("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default: " + e.getMessage());
+        }
+        log.info("[LayoutServiceImpl.findDefaultLayout] Layout di default non trovato");
+        return null;
     }
 }

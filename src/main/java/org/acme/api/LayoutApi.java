@@ -8,7 +8,9 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.acme.exception.ApplicationException;
 import org.acme.exception.ServiceException;
 import org.acme.layout.LayoutService;
+import org.acme.layout.dto.FiltroDTO;
 import org.acme.layout.dto.LayoutDTO;
+import org.acme.layout.entity.Filtro;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
@@ -49,7 +51,7 @@ public class LayoutApi {
         return getAllLayouts();
     }
 
-    @GET
+    @POST
     @Path("/default")
     @Operation(summary = "Recupera il layout di default", description = "Restituisce il layout impostato come default")
     @APIResponses(value = {
@@ -57,10 +59,11 @@ public class LayoutApi {
             @APIResponse(responseCode = "404", description = "Nessun layout di default trovato"),
             @APIResponse(responseCode = "500", description = "Errore interno del server")
     })
-    public Response getDefaultLayout() throws ApplicationException {
+    public Response getDefaultLayout(FiltroDTO filtroDto) throws ApplicationException {
         try {
             log.info("[LayoutApi.getDefaultLayout] recupero del layout di default");
-            LayoutDTO layout = layoutService.findDefaultLayout();
+            //            LayoutDTO layout = layoutService.findDefaultLayout();
+            LayoutDTO layout = layoutService.findByFiltro(filtroDto);
             log.info("[LayoutApi.getDefaultLayout] recuperato layout di default con successo");
             return Response.ok(layout).build();
         } catch (ServiceException e) {
@@ -71,8 +74,8 @@ public class LayoutApi {
     @POST
     @Path("/reset")
     @Operation(summary = "Resetta al layout di default", description = "Restituisce il layout di default per l'utente")
-    public Response resetLayout() throws ApplicationException {
-        return getDefaultLayout();
+    public Response resetLayout(FiltroDTO filtroDto) throws ApplicationException {
+        return getDefaultLayout(filtroDto);
     }
 
     @GET
@@ -86,9 +89,10 @@ public class LayoutApi {
     public Response getLayoutById(@PathParam("id") String id) throws ApplicationException {
         try {
             log.info("[LayoutApi.getLayoutById] Id ricevuto: " + id);
-            if ("default".equals(id)) {
-                return getDefaultLayout();
-            }
+            // TODO: da rivedere questa logica, non mi torna
+//            if ("default".equals(id)) {
+//                return getDefaultLayout();
+//            }
             LayoutDTO layout = layoutService.findLayoutById(id);
             return Response.ok(layout).build();
         } catch (ServiceException e) {
