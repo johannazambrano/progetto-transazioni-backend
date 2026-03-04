@@ -17,10 +17,10 @@ import org.acme.category.dto.CategoryDTO;
 @RegisterForReflection
 public class TransactionDTO {
     private String id;
-    public String title;
-    public Double amount;
-    public CategoryDTO category;
-    public String date;
+    private String title;
+    private Double amount;
+    private CategoryDTO category;
+    private String date;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class TransactionDTOBuilder{}

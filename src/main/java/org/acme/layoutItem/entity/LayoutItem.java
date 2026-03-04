@@ -10,15 +10,15 @@ import org.bson.types.ObjectId;
 @AllArgsConstructor
 public class LayoutItem {
     private ObjectId id;
-    public String i;
-    public Integer x;
-    public Integer y;
-    public Integer w;
-    public Integer h;
-    public Integer minW;
-    public Integer maxW;
-    public Integer minH;
-    public Integer maxH;
-    public Boolean staticLayout;
+    private String i;
+    private Integer x;
+    private Integer y;
+    private Integer w;
+    private Integer h;
+    private Integer minW;
+    private Integer maxW;
+    private Integer minH;
+    private Integer maxH;
+    private Boolean staticLayout;
 
 }

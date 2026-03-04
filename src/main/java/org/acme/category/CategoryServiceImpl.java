@@ -99,21 +99,21 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void aggiornaCategory(String id, CategoryDTO categoryDTO) throws ServiceException {
         try{
-            log.info("[CategoryApi.aggiornaCategory] verifica esistenza Category con id: " + id);
+            log.info("[CategoryServiceImpl.aggiornaCategory] verifica esistenza Category con id: " + id);
             Optional<Category> category = categoryRepository.findByIdOptional(new ObjectId(id));
             if(category.isPresent()){
-                log.info("[CategoryApi.aggiornaCategory] trovata categoria con id: " + id);
+                log.info("[CategoryServiceImpl.aggiornaCategory] trovata categoria con id: " + id);
                 Category newCategory = categoryMapper.convertDtoToEntity(categoryDTO);
                 newCategory.setId(category.get().getId());
                 categoryRepository.update(newCategory);
-                log.info("[CategoryApi.aggiornaCategory] aggiornata categoria con id: " + id);
+                log.info("[CategoryServiceImpl.aggiornaCategory] aggiornata categoria con id: " + id);
                 return;
             }
             throw new ServiceException("Categoria con id: " + id + " non trovata");
         }catch(MongoWriteException e){
         // codice standard di errore (11000) per gli errori di chiave duplicata in MongoDB
             if(e.getCode() == 11000) {
-                log.error("[CategoryApi.aggiornaCategory] Tentativo di inserire codice duplicato: " + categoryDTO.getCodice());
+                log.error("[CategoryServiceImpl.aggiornaCategory] Tentativo di inserire codice duplicato: " + categoryDTO.getCodice());
             // lancia un'eccezione service specifica per il conflitto dei dati
                 String msg = "Il codice '" + categoryDTO.getCodice() + "' esiste già.";
                 throw new ServiceException(msg);

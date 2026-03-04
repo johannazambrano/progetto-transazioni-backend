@@ -67,7 +67,6 @@ public class CategoryApi {
             description = "Crea una nuova categoria sul sistema")
     @POST
     @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response creaCategory(CategoryDTO categoryDTO) throws ApplicationException {
         try{
             String idCategory = categoryService.crea(categoryDTO);

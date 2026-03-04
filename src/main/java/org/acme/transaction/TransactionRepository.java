@@ -40,8 +40,6 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
                 throw new ServiceException("Formato data non valido. Utilizzare il formato yyyy-MM-dd.");
             }
         }
-        
-        TransactionResponse transactionResponse = new TransactionResponse();
 
         StringBuilder query = new StringBuilder();
         Parameters params = new Parameters();

@@ -10,7 +10,6 @@ import org.acme.exception.ServiceException;
 import org.acme.layout.LayoutService;
 import org.acme.layout.dto.FiltroDTO;
 import org.acme.layout.dto.LayoutDTO;
-import org.acme.layout.entity.Filtro;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;

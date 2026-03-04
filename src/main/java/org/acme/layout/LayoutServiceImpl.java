@@ -54,21 +54,6 @@ public class LayoutServiceImpl implements LayoutService {
         }
     }
 
-//    @Override
-//    public LayoutDTO findDefaultLayout() throws ServiceException {
-//        try {
-//            log.info("Ricerca layout di default");
-//            Layout layout = layoutRepository.findDefaultLayout();
-//            if (layout == null) {
-//                throw new NotFoundException("Nessun layout di default trovato.");
-//            }
-//            return layoutMapper.convertEntityToDto(layout);
-//        } catch (Exception e) {
-//            log.error("Errore durante la ricerca del layout di default ", e);
-//            throw new ServiceException("Errore durante la ricerca del layout di default: " + e.getMessage());
-//        }
-//    }
-
     @Override
     public String createLayout(LayoutDTO layoutDTO) throws ServiceException {
         try {
@@ -130,7 +115,7 @@ public class LayoutServiceImpl implements LayoutService {
     public LayoutDTO findByFiltro(FiltroDTO filtroDto) throws ServiceException {
         try {
             log.info("[LayoutServiceImpl.findDefaultLayout] Ricerca layout di default");
-            Layout layout = layoutRepository.findByFilters(filtroDto);
+            Layout layout = layoutRepository.findByFilters(filtroDto.getLayoutName(), filtroDto.getIsDefault());
             if (layout != null) {
                 return layoutMapper.convertEntityToDto(layout);
             }

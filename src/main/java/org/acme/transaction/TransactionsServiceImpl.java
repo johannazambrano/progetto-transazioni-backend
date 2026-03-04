@@ -1,11 +1,9 @@
 package org.acme.transaction;
 
-import com.mongodb.MongoWriteException;
 import jakarta.enterprise.inject.Model;
 import jakarta.inject.Inject;
 import lombok.extern.apachecommons.CommonsLog;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
-import org.acme.category.CategoryRepository;
 import org.acme.exception.ServiceException;
 import org.acme.transaction.dto.TransactionDTO;
 import org.acme.transaction.dto.TransactionResponseDTO;
@@ -29,9 +27,6 @@ public class TransactionsServiceImpl implements TransactionsService{
 
     @Inject
     TransactionResponseMapperImpl transactionResponseMapper;
-
-    @Inject
-    CategoryRepository categoryRepository;
 
     @Override
     public String createTransaction(TransactionDTO transactionDTO) throws ServiceException {

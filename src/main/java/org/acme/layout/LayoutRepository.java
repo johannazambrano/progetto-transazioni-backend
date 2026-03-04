@@ -4,25 +4,18 @@ import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.apachecommons.CommonsLog;
-import org.acme.layout.dto.FiltroDTO;
 import org.acme.layout.entity.Layout;
 
 @ApplicationScoped
 @CommonsLog
 public class LayoutRepository implements PanacheMongoRepository<Layout> {
 
-    // Qui puoi aggiungere metodi di ricerca custom se necessario
-    // Esempio: findByLayoutName(String name)
-    
     public Layout findByLayoutName(String layoutName) {
         return find("layoutName", layoutName).firstResult();
     }
 
-    public Layout findByFilters(FiltroDTO filtroDto) {
-        log.info("[LayoutRepository.findByFilters] Ricerca layout con filtro: " + filtroDto);
-
-        String layoutName = filtroDto.getLayoutName();
-        Boolean isDefault = filtroDto.getIsDefault();
+    public Layout findByFilters(String layoutName, Boolean isDefault) {
+        log.info("[LayoutRepository.findByFilters] Ricerca layout con layoutName: " + layoutName + ", isDefault: " + isDefault);
 
         StringBuilder query = new StringBuilder();
         Parameters params = new Parameters();

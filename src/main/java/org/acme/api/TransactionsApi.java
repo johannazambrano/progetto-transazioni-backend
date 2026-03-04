@@ -61,7 +61,6 @@ public class TransactionsApi {
             description = "Crea una nuova transaction sul sistema")
     @POST
     @Path("/")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response creaTransaction(TransactionDTO transactionDTO) throws ApplicationException {
         try{
             String idTransaction = transactionsService.createTransaction(transactionDTO);

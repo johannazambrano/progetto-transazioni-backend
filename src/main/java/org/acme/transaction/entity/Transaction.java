@@ -13,8 +13,8 @@ import org.bson.types.ObjectId;
 @MongoEntity(collection="TRANSACTION")
 public class Transaction {
     private ObjectId id;
-    public String title;
-    public Double amount;
-    public Category category;
-    public String date;
+    private String title;
+    private Double amount;
+    private Category category;
+    private String date;
 }
