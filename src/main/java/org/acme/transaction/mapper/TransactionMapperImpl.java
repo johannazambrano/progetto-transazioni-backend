@@ -23,7 +23,7 @@ public class TransactionMapperImpl extends AbstractMapperComponent<TransactionDT
                     .amount(entity.getAmount())
                     .category(categoryMapper.convertEntityToDto(entity.getCategory()))
                     .date(entity.getDate())
-                    .id(entity.getId().toHexString())
+                    .id(entity.getId() != null ? entity.getId().toHexString() : null)
                     .build();
             return dto;
         }else{

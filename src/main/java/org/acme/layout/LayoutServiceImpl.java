@@ -134,11 +134,13 @@ public class LayoutServiceImpl implements LayoutService {
             if (layout != null) {
                 return layoutMapper.convertEntityToDto(layout);
             }
-        } catch (Exception e) {
+            log.info("[LayoutServiceImpl.findDefaultLayout] Layout di default non trovato");
+            throw new ServiceException("Layout con nome: " + filtroDto.getLayoutName() + " non trovato");
+        } catch(ServiceException se){
+            throw new ServiceException(se.getMessage());
+        }catch (Exception e) {
             log.error("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default ", e);
             throw new ServiceException("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default: " + e.getMessage());
         }
-        log.info("[LayoutServiceImpl.findDefaultLayout] Layout di default non trovato");
-        return null;
     }
 }

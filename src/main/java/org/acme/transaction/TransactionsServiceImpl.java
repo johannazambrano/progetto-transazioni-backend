@@ -77,8 +77,10 @@ public class TransactionsServiceImpl implements TransactionsService{
                 return;
             }
             throw new ServiceException("Transaction con id:" + id + " non trovato!");
-        }catch(Exception ex) {
-            throw new ServiceException(ex);
+        }catch(ServiceException se){
+            throw new ServiceException(se.getMessage());
+        }catch(Exception e) {
+            throw new ServiceException(e.getMessage(), e);
         }
     }
 
@@ -94,8 +96,10 @@ public class TransactionsServiceImpl implements TransactionsService{
             }else{
                 throw new ServiceException("Transaction con id:" + id + " non trovato!");
             }
-        }catch(Exception ex) {
-            throw new ServiceException(ex);
+        }catch(ServiceException se){
+            throw new ServiceException(se.getMessage());
+        }catch(Exception e) {
+            throw new ServiceException(e.getMessage(), e);
         }
     }
 }

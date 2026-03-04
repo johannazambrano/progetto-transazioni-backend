@@ -33,10 +33,12 @@ public class CategoryServiceImpl implements CategoryService {
                 log.info("[CategoryServiceImpl.findCategoryByCodice] trovata categoria con codice" + codice);
                 return categoryMapper.convertEntityToDto(category.get());
             }
-        }catch(Exception e){
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException("Categoria con codice: " + codice + " non trovata");
+        }catch(ServiceException se){
+            throw new ServiceException(se.getMessage());
+        }catch(Exception e) {
+            throw new ServiceException(e.getMessage(), e);
         }
-        return null;
     }
 
     @Override
@@ -49,8 +51,10 @@ public class CategoryServiceImpl implements CategoryService {
                 return categoryMapper.convertEntityToDto(category.get());
             }
             throw new ServiceException("Categoria con id:" + id + " non trovata");
-        }catch(Exception e){
-            throw new ServiceException(e.getMessage());
+        }catch(ServiceException se){
+            throw new ServiceException(se.getMessage());
+        }catch(Exception e) {
+            throw new ServiceException(e.getMessage(), e);
         }
     }
 
@@ -96,7 +100,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void aggiornaCategory(String id, CategoryDTO categoryDTO) throws ServiceException {
         try{
             log.info("[CategoryApi.aggiornaCategory] verifica esistenza Category con id: " + id);
-            Optional<Category> category = categoryRepository.findByCodice(id);
+            Optional<Category> category = categoryRepository.findByIdOptional(new ObjectId(id));
             if(category.isPresent()){
                 log.info("[CategoryApi.aggiornaCategory] trovata categoria con id: " + id);
                 Category newCategory = categoryMapper.convertDtoToEntity(categoryDTO);
@@ -113,6 +117,8 @@ public class CategoryServiceImpl implements CategoryService {
             // lancia un'eccezione service specifica per il conflitto dei dati
                 String msg = "Il codice '" + categoryDTO.getCodice() + "' esiste già.";
                 throw new ServiceException(msg);
+            }else {
+                throw new ServiceException(e.getMessage());
             }
         }catch(Exception ex) {
             throw new ServiceException(ex.getMessage());

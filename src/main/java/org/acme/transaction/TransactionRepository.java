@@ -6,10 +6,14 @@ import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.apachecommons.CommonsLog;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
-import org.acme.api.dto.PaginazioneDTO;
+import org.acme.util.entity.Paginazione;
 import org.acme.exception.ServiceException;
 import org.acme.transaction.entity.Transaction;
 import org.acme.transaction.entity.TransactionResponse;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.regex.Pattern;
 
 @ApplicationScoped
 @CommonsLog
@@ -26,8 +30,14 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
         
         // Validazione delle date
         if (startDate != null && !startDate.isBlank() && endDate != null && !endDate.isBlank()) {
-            if (startDate.compareTo(endDate) > 0) {
-                throw new ServiceException("La data di inizio non può essere successiva alla data di fine.");
+            try {
+                LocalDate start = LocalDate.parse(startDate);
+                LocalDate end = LocalDate.parse(endDate);
+                if (start.isAfter(end)) {
+                    throw new ServiceException("La data di inizio non può essere successiva alla data di fine.");
+                }
+            } catch (DateTimeParseException e) {
+                throw new ServiceException("Formato data non valido. Utilizzare il formato yyyy-MM-dd.");
             }
         }
         
@@ -38,7 +48,7 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
 
         if (title != null && !title.isBlank()) {
             query.append("title like :title");
-            params.and("title", "(?i).*" + title + ".*");
+            params.and("title", "(?i).*" + Pattern.quote(title) + ".*");
         }
         
         // Gestione range date
@@ -65,25 +75,27 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
             // Corretto da 'categories.descrizione' a 'category.descrizione'
             // Inoltre cerco anche per codice per essere più robusto
             query.append("(category.descrizione like :category or category.codice like :category)");
-            params.and("category", "(?i).*" + category + ".*");
+            params.and("category", "(?i).*" + Pattern.quote(category) + ".*");
         }
 
 
         log.info("[TransactionRepository.ricercaTransaction] Query: " + query);
 
         //Paginazione
-        PaginazioneDTO paginazioneDTO;
+        Paginazione paginazione;
         if (filtroTransactionDTO.getPaginazione() == null) {
             // Se nel filtro la paginazione non è settata la imposto di default
-            PaginazioneDTO paginazioneDefault = new PaginazioneDTO();
-            paginazioneDefault.setNumeroPagina(0);
-            paginazioneDefault.setNumeroElementiPerPagina(10);
-            paginazioneDTO = paginazioneDefault;
+            paginazione = new Paginazione();
+            paginazione.setNumeroPagina(0);
+            paginazione.setNumeroElementiPerPagina(10);
         } else {
-            paginazioneDTO = filtroTransactionDTO.getPaginazione();
+            paginazione = Paginazione.builder()
+                    .numeroPagina(filtroTransactionDTO.getPaginazione().getNumeroPagina())
+                    .numeroElementiPerPagina(filtroTransactionDTO.getPaginazione().getNumeroElementiPerPagina())
+                    .build();
         }
 
-        log.info("[TransactionRepository.ricercaTransaction] Paginazione: " + paginazioneDTO);
+        log.info("[TransactionRepository.ricercaTransaction] Paginazione: " + paginazione);
 
         PanacheQuery<Transaction> panacheQuery;
         if (!query.isEmpty()) {
@@ -91,16 +103,16 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
         } else {
             panacheQuery = findAll();
         }
-        
-        // Applica la paginazione alla query
-        panacheQuery.page(paginazioneDTO.getNumeroPagina(), paginazioneDTO.getNumeroElementiPerPagina());
 
-        paginazioneDTO.setNumeroRisTotali(panacheQuery.count());
-        paginazioneDTO.setNumeroPagTotali((int) Math.ceil((double) paginazioneDTO.getNumeroRisTotali() / paginazioneDTO.getNumeroElementiPerPagina()));
+        // Applica la paginazione alla query
+        panacheQuery.page(paginazione.getNumeroPagina(), paginazione.getNumeroElementiPerPagina());
+
+        paginazione.setNumeroRisTotali(panacheQuery.count());
+        paginazione.setNumeroPagTotali((int) Math.ceil((double) paginazione.getNumeroRisTotali() / paginazione.getNumeroElementiPerPagina()));
 
         TransactionResponse transactionsFiltrate = new TransactionResponse();
         transactionsFiltrate.setTransactions(panacheQuery.list());
-        transactionsFiltrate.setPaginazione(paginazioneDTO);
+        transactionsFiltrate.setPaginazione(paginazione);
 
         log.info("[TransactionRepository.ricercaTransaction] transactionsFiltrate: " + transactionsFiltrate);
 

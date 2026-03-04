@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.acme.api.dto.PaginazioneDTO;
+import org.acme.util.entity.Paginazione;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ import java.util.List;
 @Builder
 public class TransactionResponse {
     List<Transaction> transactions;
-    PaginazioneDTO paginazione;
+    Paginazione paginazione;
 }
