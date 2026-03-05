@@ -4,14 +4,15 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.mongodb.panache.PanacheQuery;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.extern.apachecommons.CommonsLog;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
 import org.acme.category.entity.Category;
 import org.acme.transaction.entity.Transaction;
+import org.bson.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
@@ -38,45 +39,36 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
         LocalDate startDate = filtroTransactionDTO.getStartDate();
         LocalDate endDate = filtroTransactionDTO.getEndDate();
 
-        StringBuilder query = new StringBuilder();
-        Parameters params = new Parameters();
+        Document filter = new Document();
 
+        // Text search per title (usa text index, no full collection scan)
         if (title != null && !title.isBlank()) {
-            query.append("title like :title");
-            params.and("title", "(?i).*" + Pattern.quote(title) + ".*");
+            filter.append("$text", new Document("$search", title));
         }
 
         // Gestione range date
-        if (startDate != null) {
-            if (!query.isEmpty()) {
-                query.append(" and ");
-            }
-            query.append("date >= :startDate");
-            params.and("startDate", startDate);
+        if (startDate != null || endDate != null) {
+            Document dateFilter = new Document();
+            if (startDate != null) dateFilter.append("$gte", startDate);
+            if (endDate != null) dateFilter.append("$lte", endDate);
+            filter.append("date", dateFilter);
         }
 
-        if (endDate != null) {
-            if (!query.isEmpty()) {
-                query.append(" and ");
-            }
-            query.append("date <= :endDate");
-            params.and("endDate", endDate);
-        }
-
+        // Category search (regex case-insensitive su sub-document)
         if (category != null && !category.isBlank()) {
-            if (!query.isEmpty()) {
-                query.append(" and ");
-            }
-            query.append("(category.descrizione like :category or category.codice like :category)");
-            params.and("category", "(?i).*" + Pattern.quote(category) + ".*");
+            String escaped = Pattern.quote(category);
+            Document regex = new Document("$regex", escaped).append("$options", "i");
+            filter.append("$or", List.of(
+                    new Document("category.descrizione", regex),
+                    new Document("category.codice", regex)
+            ));
         }
 
-        log.info("[TransactionRepository.ricercaTransaction] Query: " + query);
+        log.info("[TransactionRepository.ricercaTransaction] Query: " + filter);
 
-        if (!query.isEmpty()) {
-            return find(query.toString(), params);
-        } else {
+        if (filter.isEmpty()) {
             return findAll();
         }
+        return find(filter);
     }
 }

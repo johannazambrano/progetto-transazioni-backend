@@ -77,16 +77,19 @@ public class TransactionsServiceImpl implements TransactionsService{
             // Query dal repository
             PanacheQuery<Transaction> panacheQuery = transactionRepository.ricercaTransaction(filtroTransactionDTO);
 
-            // Applica la paginazione alla query
-            panacheQuery.page(paginazione.getNumeroPagina(), paginazione.getNumeroElementiPerPagina());
-
-            // Calcolo metadati paginazione
-            paginazione.setNumeroRisTotali(panacheQuery.count());
-            paginazione.setNumeroPagTotali((int) Math.ceil((double) paginazione.getNumeroRisTotali() / paginazione.getNumeroElementiPerPagina()));
+            // Count prima della paginazione (singola query)
+            long totalCount = panacheQuery.count();
+            paginazione.setNumeroRisTotali(totalCount);
+            paginazione.setNumeroPagTotali((int) Math.ceil((double) totalCount / paginazione.getNumeroElementiPerPagina()));
 
             // Assemblaggio risposta
             TransactionResponse transactionResponse = new TransactionResponse();
-            transactionResponse.setTransactions(panacheQuery.list());
+            if (totalCount > 0) {
+                panacheQuery.page(paginazione.getNumeroPagina(), paginazione.getNumeroElementiPerPagina());
+                transactionResponse.setTransactions(panacheQuery.list());
+            } else {
+                transactionResponse.setTransactions(java.util.List.of());
+            }
             transactionResponse.setPaginazione(paginazione);
 
             log.info("[TransactionServiceImpl.ricerca] Risultato ricerca:" + transactionResponse);
@@ -123,12 +126,10 @@ public class TransactionsServiceImpl implements TransactionsService{
     @Override
     public void cancella(String id) throws ServiceException{
         try{
-            log.info("[TransactionServiceImpl.cancella] verifica esistenza transaction con id" + id);
-            Optional<Transaction> transaction = transactionRepository.findByIdOptional(new ObjectId(id));
-            if(transaction.isPresent()){
-                log.info("[TransactionServiceImpl.cancella] trovata transaction con id" + id);
-                transactionRepository.delete(transaction.get());
-                log.info("[TransactionServiceImpl.cancella] cancellata transaction con id" + id);
+            log.info("[TransactionServiceImpl.cancella] cancellazione transaction con id " + id);
+            boolean deleted = transactionRepository.deleteById(new ObjectId(id));
+            if(deleted){
+                log.info("[TransactionServiceImpl.cancella] cancellata transaction con id " + id);
             }else{
                 throw new NotFoundException("Transaction con id:" + id + " non trovato!");
             }
