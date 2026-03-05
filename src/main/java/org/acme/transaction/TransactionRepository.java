@@ -12,7 +12,6 @@ import org.acme.transaction.entity.Transaction;
 import org.acme.transaction.entity.TransactionResponse;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
@@ -25,20 +24,12 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
         String title = filtroTransactionDTO.getTitle();
         Double amount = filtroTransactionDTO.getAmount();
         String category = filtroTransactionDTO.getCategory();
-        String startDate = filtroTransactionDTO.getStartDate();
-        String endDate = filtroTransactionDTO.getEndDate();
-        
+        LocalDate startDate = filtroTransactionDTO.getStartDate();
+        LocalDate endDate = filtroTransactionDTO.getEndDate();
+
         // Validazione delle date
-        if (startDate != null && !startDate.isBlank() && endDate != null && !endDate.isBlank()) {
-            try {
-                LocalDate start = LocalDate.parse(startDate);
-                LocalDate end = LocalDate.parse(endDate);
-                if (start.isAfter(end)) {
-                    throw new ServiceException("La data di inizio non può essere successiva alla data di fine.");
-                }
-            } catch (DateTimeParseException e) {
-                throw new ServiceException("Formato data non valido. Utilizzare il formato yyyy-MM-dd.");
-            }
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+            throw new ServiceException("La data di inizio non può essere successiva alla data di fine.");
         }
 
         StringBuilder query = new StringBuilder();
@@ -48,9 +39,9 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
             query.append("title like :title");
             params.and("title", "(?i).*" + Pattern.quote(title) + ".*");
         }
-        
+
         // Gestione range date
-        if (startDate != null && !startDate.isBlank()) {
+        if (startDate != null) {
             if (!query.isEmpty()) {
                 query.append(" and ");
             }
@@ -58,7 +49,7 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
             params.and("startDate", startDate);
         }
 
-        if (endDate != null && !endDate.isBlank()) {
+        if (endDate != null) {
             if (!query.isEmpty()) {
                 query.append(" and ");
             }

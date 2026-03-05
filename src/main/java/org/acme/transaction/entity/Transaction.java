@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.acme.category.entity.Category;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,5 +18,5 @@ public class Transaction {
     private String title;
     private Double amount;
     private Category category;
-    private String date;
+    private LocalDate date;
 }

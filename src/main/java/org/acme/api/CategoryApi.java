@@ -1,6 +1,7 @@
 package org.acme.api;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -9,6 +10,7 @@ import org.acme.category.CategoryService;
 import org.acme.category.dto.CategoryDTO;
 import org.acme.category.dto.CategoryResponse;
 import org.acme.exception.ApplicationException;
+import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
@@ -67,7 +69,7 @@ public class CategoryApi {
             description = "Crea una nuova categoria sul sistema")
     @POST
     @Path("/")
-    public Response creaCategory(CategoryDTO categoryDTO) throws ApplicationException {
+    public Response creaCategory(@Valid CategoryDTO categoryDTO) throws ApplicationException {
         try{
             String idCategory = categoryService.crea(categoryDTO);
             log.info("[CategoryApi.creaCategory] Crea Categoria" + idCategory);
@@ -93,13 +95,15 @@ public class CategoryApi {
             description = "Aggiorna una category sul sistema dato un id")
     @PUT
     @Path("/{id}")
-    public Response aggiornaCategory(@PathParam("id") String id, CategoryDTO categoryDTO) throws ApplicationException {
+    public Response aggiornaCategory(@PathParam("id") String id, @Valid CategoryDTO categoryDTO) throws ApplicationException {
         try{
             log.info("[CategoryApi.aggiornaCategory] Aggiorna Categoria con id: " + id);
             //Controlla che esista il profilo con quell'id. Se esiste aggiorna altrimenti lancia eccezione
             categoryService.aggiornaCategory(id, categoryDTO);
             log.info("[CategoryApi.aggiornaCategory] Aggiornata category con id: " + id);
             return Response.noContent().build();
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception ex){
             throw new ApplicationException(ex);
         }
@@ -126,6 +130,8 @@ public class CategoryApi {
             categoryService.cancella(id);
             log.info("[CategoryApi.deleteCategory] Cancellata Categoria con id: " + id);
             return Response.noContent().build();
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception ex){
             throw new ApplicationException(ex);
         }

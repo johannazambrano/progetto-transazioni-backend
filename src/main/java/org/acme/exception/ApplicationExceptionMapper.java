@@ -1,0 +1,19 @@
+package org.acme.exception;
+
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+
+@Provider
+public class ApplicationExceptionMapper implements ExceptionMapper<ApplicationException> {
+
+    @Override
+    public Response toResponse(ApplicationException exception) {
+        ErrorResponse error = new ErrorResponse("INTERNAL_SERVER_ERROR", exception.getMessage());
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .type(MediaType.APPLICATION_JSON)
+                .entity(error)
+                .build();
+    }
+}

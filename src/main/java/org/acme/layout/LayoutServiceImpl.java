@@ -33,9 +33,11 @@ public class LayoutServiceImpl implements LayoutService {
                 throw new NotFoundException("Layout con nome " + name + " non trovato.");
             }
             return layoutMapper.convertEntityToDto(layout);
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             log.error("Errore durante la ricerca del layout per nome ", e);
-            throw new ServiceException("Errore durante la ricerca del layout per nome: " + e.getMessage());
+            throw new ServiceException("Errore durante la ricerca del layout per nome: " + e.getMessage(), e);
         }
     }
 
@@ -48,9 +50,11 @@ public class LayoutServiceImpl implements LayoutService {
                 throw new NotFoundException("Layout con ID " + id + " non trovato.");
             }
             return layoutMapper.convertEntityToDto(layout);
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             log.error("Errore durante la ricerca del layout per ID ", e);
-            throw new ServiceException("Errore durante la ricerca del layout per ID: " + e.getMessage());
+            throw new ServiceException("Errore durante la ricerca del layout per ID: " + e.getMessage(), e);
         }
     }
 
@@ -63,7 +67,7 @@ public class LayoutServiceImpl implements LayoutService {
             return layout.getId().toHexString();
         } catch (Exception e) {
             log.error("Errore durante la creazione del layout ", e);
-            throw new ServiceException("Errore durante la creazione del layout: " + e.getMessage());
+            throw new ServiceException("Errore durante la creazione del layout: " + e.getMessage(), e);
         }
     }
 
@@ -79,9 +83,11 @@ public class LayoutServiceImpl implements LayoutService {
             // Assicura che l'ID non venga cambiato
             updatedLayout.setId(existingLayout.getId());
             layoutRepository.update(updatedLayout);
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             log.error("Errore durante l'aggiornamento del layout ", e);
-            throw new ServiceException("Errore durante l'aggiornamento del layout: " + e.getMessage());
+            throw new ServiceException("Errore durante l'aggiornamento del layout: " + e.getMessage(), e);
         }
     }
 
@@ -93,9 +99,11 @@ public class LayoutServiceImpl implements LayoutService {
             if (!deleted) {
                 throw new NotFoundException("Layout con id " + id + " non trovato.");
             }
+        } catch (NotFoundException nfe) {
+            throw nfe;
         } catch (Exception e) {
             log.error("Errore durante la cancellazione del layout ", e);
-            throw new ServiceException("Errore durante la cancellazione del layout: " + e.getMessage());
+            throw new ServiceException("Errore durante la cancellazione del layout: " + e.getMessage(), e);
         }
     }
 
@@ -107,7 +115,7 @@ public class LayoutServiceImpl implements LayoutService {
             return layoutMapper.convertEntityToDto(layouts);
         } catch (Exception e) {
             log.error("Errore durante il recupero di tutti i layout ", e);
-            throw new ServiceException("Errore durante il recupero di tutti i layout: " + e.getMessage());
+            throw new ServiceException("Errore durante il recupero di tutti i layout: " + e.getMessage(), e);
         }
     }
 
@@ -120,12 +128,12 @@ public class LayoutServiceImpl implements LayoutService {
                 return layoutMapper.convertEntityToDto(layout);
             }
             log.info("[LayoutServiceImpl.findDefaultLayout] Layout di default non trovato");
-            throw new ServiceException("Layout con nome: " + filtroDto.getLayoutName() + " non trovato");
-        } catch(ServiceException se){
-            throw new ServiceException(se.getMessage());
+            throw new NotFoundException("Layout con nome: " + filtroDto.getLayoutName() + " non trovato");
+        } catch(NotFoundException nfe){
+            throw nfe;
         }catch (Exception e) {
             log.error("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default ", e);
-            throw new ServiceException("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default: " + e.getMessage());
+            throw new ServiceException("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default: " + e.getMessage(), e);
         }
     }
 }

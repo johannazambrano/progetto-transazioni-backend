@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.acme.layoutItem.entity.LayoutItem;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,7 +17,7 @@ public class Layout {
     private ObjectId id;
     private String layoutName;
     private List<LayoutItem> layoutItems;
-    private String updatedAt;
+    private LocalDateTime updatedAt;
     private Boolean isDefault;
 
 }

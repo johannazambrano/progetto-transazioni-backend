@@ -1,6 +1,7 @@
 package org.acme.api;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -58,7 +59,7 @@ public class LayoutApi {
             @APIResponse(responseCode = "404", description = "Nessun layout di default trovato"),
             @APIResponse(responseCode = "500", description = "Errore interno del server")
     })
-    public Response getDefaultLayout(FiltroDTO filtroDto) throws ApplicationException {
+    public Response getDefaultLayout(@Valid FiltroDTO filtroDto) throws ApplicationException {
         try {
             log.info("[LayoutApi.getDefaultLayout] recupero del layout di default");
             //            LayoutDTO layout = layoutService.findDefaultLayout();
@@ -73,7 +74,7 @@ public class LayoutApi {
     @POST
     @Path("/reset")
     @Operation(summary = "Resetta al layout di default", description = "Restituisce il layout di default per l'utente")
-    public Response resetLayout(FiltroDTO filtroDto) throws ApplicationException {
+    public Response resetLayout(@Valid FiltroDTO filtroDto) throws ApplicationException {
         return getDefaultLayout(filtroDto);
     }
 
@@ -106,7 +107,7 @@ public class LayoutApi {
             @APIResponse(responseCode = "201", description = "Layout creato con successo"),
             @APIResponse(responseCode = "500", description = "Errore interno del server")
     })
-    public Response createLayout(LayoutDTO layoutDTO) throws ApplicationException {
+    public Response createLayout(@Valid LayoutDTO layoutDTO) throws ApplicationException {
         try {
             log.info("[LayoutApi.createLayout] crea layout con DTO: " + layoutDTO);
             String id = layoutService.createLayout(layoutDTO);
@@ -125,7 +126,7 @@ public class LayoutApi {
             @APIResponse(responseCode = "404", description = "Layout non trovato"),
             @APIResponse(responseCode = "500", description = "Errore interno del server")
     })
-    public Response updateLayout(@PathParam("id") String id, LayoutDTO layoutDTO) throws ApplicationException {
+    public Response updateLayout(@PathParam("id") String id, @Valid LayoutDTO layoutDTO) throws ApplicationException {
         try {
             log.info("[LayoutApi.updateLayout] aggiorna layout con DTO: " + layoutDTO + " e id: " + id);
             layoutService.updateLayout(id, layoutDTO);

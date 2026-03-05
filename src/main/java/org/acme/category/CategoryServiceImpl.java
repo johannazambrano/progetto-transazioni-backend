@@ -8,6 +8,7 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.acme.category.dto.CategoryDTO;
 import org.acme.category.entity.Category;
 import org.acme.category.mapper.CategoryMapperImpl;
+import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
 import org.bson.types.ObjectId;
 
@@ -33,9 +34,9 @@ public class CategoryServiceImpl implements CategoryService {
                 log.info("[CategoryServiceImpl.findCategoryByCodice] trovata categoria con codice" + codice);
                 return categoryMapper.convertEntityToDto(category.get());
             }
-            throw new ServiceException("Categoria con codice: " + codice + " non trovata");
-        }catch(ServiceException se){
-            throw new ServiceException(se.getMessage());
+            throw new NotFoundException("Categoria con codice: " + codice + " non trovata");
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -50,9 +51,9 @@ public class CategoryServiceImpl implements CategoryService {
                 log.info("[CategoryServiceImpl.findById] trovata categoria con id" + id);
                 return categoryMapper.convertEntityToDto(category.get());
             }
-            throw new ServiceException("Categoria con id:" + id + " non trovata");
-        }catch(ServiceException se){
-            throw new ServiceException(se.getMessage());
+            throw new NotFoundException("Categoria con id:" + id + " non trovata");
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -66,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.info("[CategoryServiceImpl.elenco] Recuperate delle categorie");
             return categoryMapper.convertEntityToDto(category);
         }catch(Exception ex) {
-            throw new ServiceException(ex.getMessage());
+            throw new ServiceException(ex.getMessage(), ex);
         }
     }
 
@@ -90,9 +91,9 @@ public class CategoryServiceImpl implements CategoryService {
                 throw new ServiceException(msg);
             }
             // Gestisci altre eccezioni Mongo, se necessario
-            throw new ServiceException("Errore di scrittura su MongoDB: " + e.getMessage());
+            throw new ServiceException("Errore di scrittura su MongoDB: " + e.getMessage(), e);
         } catch(Exception ex) {
-            throw new ServiceException(ex.getMessage());
+            throw new ServiceException(ex.getMessage(), ex);
         }
     }
 
@@ -109,7 +110,9 @@ public class CategoryServiceImpl implements CategoryService {
                 log.info("[CategoryServiceImpl.aggiornaCategory] aggiornata categoria con id: " + id);
                 return;
             }
-            throw new ServiceException("Categoria con id: " + id + " non trovata");
+            throw new NotFoundException("Categoria con id: " + id + " non trovata");
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(MongoWriteException e){
         // codice standard di errore (11000) per gli errori di chiave duplicata in MongoDB
             if(e.getCode() == 11000) {
@@ -118,10 +121,10 @@ public class CategoryServiceImpl implements CategoryService {
                 String msg = "Il codice '" + categoryDTO.getCodice() + "' esiste già.";
                 throw new ServiceException(msg);
             }else {
-                throw new ServiceException(e.getMessage());
+                throw new ServiceException(e.getMessage(), e);
             }
         }catch(Exception ex) {
-            throw new ServiceException(ex.getMessage());
+            throw new ServiceException(ex.getMessage(), ex);
         }
     }
 
@@ -135,10 +138,12 @@ public class CategoryServiceImpl implements CategoryService {
                 categoryRepository.delete(category.get());
                 log.info("[CategoryServiceImpl.cancella] cancellata categoria con id: " + id);
             }else{
-                throw new ServiceException("Categoria con id: " + id + " non trovata");
+                throw new NotFoundException("Categoria con id: " + id + " non trovata");
             }
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception ex){
-            throw new ServiceException(ex.getMessage());
+            throw new ServiceException(ex.getMessage(), ex);
         }
     }
 

@@ -1,12 +1,14 @@
 package org.acme.api;
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.apachecommons.CommonsLog;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
 import org.acme.exception.ApplicationException;
+import org.acme.exception.NotFoundException;
 import org.acme.transaction.TransactionsService;
 import org.acme.transaction.dto.TransactionDTO;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -38,7 +40,7 @@ public class TransactionsApi {
             description = "Cerca transactions per title, category")
     @POST
     @Path("/ricerca")
-    public Response ricercaTransactions(FiltroRicercaTransactionDTO filtroRicercaTransactionDTO) throws ApplicationException {
+    public Response ricercaTransactions(@Valid FiltroRicercaTransactionDTO filtroRicercaTransactionDTO) throws ApplicationException {
         try{
             log.info("[TransactionsApi.listaTransactions] Ricerca transaction con filtro: " + filtroRicercaTransactionDTO);
             return Response.ok(transactionsService.ricerca(filtroRicercaTransactionDTO)).build();
@@ -61,7 +63,7 @@ public class TransactionsApi {
             description = "Crea una nuova transaction sul sistema")
     @POST
     @Path("/")
-    public Response creaTransaction(TransactionDTO transactionDTO) throws ApplicationException {
+    public Response creaTransaction(@Valid TransactionDTO transactionDTO) throws ApplicationException {
         try{
             String idTransaction = transactionsService.createTransaction(transactionDTO);
             log.info("[TransactionsApi.creaTransaction] creaTransaction: " + idTransaction);
@@ -86,13 +88,15 @@ public class TransactionsApi {
             description = "Aggiorna una transaction sul sistema dato un id")
     @PUT
     @Path("/{id}")
-    public Response aggiornaTransaction(@PathParam("id") String id,TransactionDTO transactionDTO) throws ApplicationException {
+    public Response aggiornaTransaction(@PathParam("id") String id, @Valid TransactionDTO transactionDTO) throws ApplicationException {
         try{
             log.info("[TransactionsApi.aggiornaTransaction] Aggiorna transaction con id:" + id);
             // controlla se esiste la transazione altrimenti lancia eccezzione
             transactionsService.aggiornaTransaction(id, transactionDTO);
             log.info("[TransactionsApi.aggiornaTransaction] Aggiornata transaction con id:" + id);
             return Response.noContent().build();
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception ex){
             throw new ApplicationException(ex);
         }
@@ -108,6 +112,8 @@ public class TransactionsApi {
             transactionsService.cancella(id);
             log.info("[TransactionApi.deleteTransaction] Cancellata transaction con id" + id);
             return Response.noContent().build();
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch (Exception e){
             throw new ApplicationException(e);
         }

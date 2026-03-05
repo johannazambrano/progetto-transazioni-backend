@@ -1,9 +1,10 @@
 package org.acme.transaction;
 
-import jakarta.enterprise.inject.Model;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.apachecommons.CommonsLog;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
+import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
 import org.acme.transaction.dto.TransactionDTO;
 import org.acme.transaction.dto.TransactionResponseDTO;
@@ -15,7 +16,7 @@ import org.bson.types.ObjectId;
 
 import java.util.Optional;
 
-@Model
+@ApplicationScoped
 @CommonsLog
 public class TransactionsServiceImpl implements TransactionsService{
 
@@ -71,9 +72,9 @@ public class TransactionsServiceImpl implements TransactionsService{
                 log.info("[TransactionServiceImpl.aggiornaTransaction] aggiornata transaction con id" + id);
                 return;
             }
-            throw new ServiceException("Transaction con id:" + id + " non trovato!");
-        }catch(ServiceException se){
-            throw new ServiceException(se.getMessage());
+            throw new NotFoundException("Transaction con id:" + id + " non trovato!");
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -89,10 +90,10 @@ public class TransactionsServiceImpl implements TransactionsService{
                 transactionRepository.delete(transaction.get());
                 log.info("[TransactionServiceImpl.cancella] cancellata transaction con id" + id);
             }else{
-                throw new ServiceException("Transaction con id:" + id + " non trovato!");
+                throw new NotFoundException("Transaction con id:" + id + " non trovato!");
             }
-        }catch(ServiceException se){
-            throw new ServiceException(se.getMessage());
+        }catch(NotFoundException nfe){
+            throw nfe;
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }
