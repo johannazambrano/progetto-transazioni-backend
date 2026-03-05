@@ -26,7 +26,6 @@ public class TransactionDTO {
     @NotBlank
     private String title;
     @NotNull
-    @Positive
     private Double amount;
     @Valid
     private CategoryDTO category;

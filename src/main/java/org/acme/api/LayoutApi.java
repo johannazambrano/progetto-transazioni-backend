@@ -71,12 +71,12 @@ public class LayoutApi {
         }
     }
 
-    @POST
-    @Path("/reset")
-    @Operation(summary = "Resetta al layout di default", description = "Restituisce il layout di default per l'utente")
-    public Response resetLayout(@Valid FiltroDTO filtroDto) throws ApplicationException {
-        return getDefaultLayout(filtroDto);
-    }
+//    @POST
+//    @Path("/reset")
+//    @Operation(summary = "Resetta al layout di default", description = "Restituisce il layout di default per l'utente")
+//    public Response resetLayout(FiltroDTO filtroDto) throws ApplicationException {
+//        return getDefaultLayout(filtroDto);
+//    }
 
     @GET
     @Path("/{id}")
