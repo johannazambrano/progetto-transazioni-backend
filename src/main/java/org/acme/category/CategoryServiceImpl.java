@@ -10,6 +10,7 @@ import org.acme.category.entity.Category;
 import org.acme.category.mapper.CategoryMapperImpl;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
+import org.acme.transaction.TransactionRepository;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Inject
     CategoryMapperImpl categoryMapper;
+
+    @Inject
+    TransactionRepository transactionRepository;
 
     @Override
     public CategoryDTO findCategoryByCodice(String codice) throws ServiceException {
@@ -107,6 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
                 Category newCategory = categoryMapper.convertDtoToEntity(categoryDTO);
                 newCategory.setId(category.get().getId());
                 categoryRepository.update(newCategory);
+                transactionRepository.aggiornaCategoriaNelleTransactions(newCategory);
                 log.info("[CategoryServiceImpl.aggiornaCategory] aggiornata categoria con id: " + id);
                 return;
             }

@@ -1,5 +1,6 @@
 package org.acme.transaction;
 
+import io.quarkus.mongodb.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.extern.apachecommons.CommonsLog;
@@ -12,8 +13,10 @@ import org.acme.transaction.entity.Transaction;
 import org.acme.transaction.entity.TransactionResponse;
 import org.acme.transaction.mapper.TransactionMapperImpl;
 import org.acme.transaction.mapper.TransactionResponseMapperImpl;
+import org.acme.util.entity.Paginazione;
 import org.bson.types.ObjectId;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -50,9 +53,46 @@ public class TransactionsServiceImpl implements TransactionsService{
     public TransactionResponseDTO ricerca(FiltroRicercaTransactionDTO filtroTransactionDTO) throws ServiceException {
         try {
             log.info("[TransactionServiceImpl.ricerca] Ricerca transactions con filtro:" + filtroTransactionDTO);
-            TransactionResponse transaction = transactionRepository.ricercaTransaction(filtroTransactionDTO);
-            log.info("[TransactionServiceImpl.ricerca] Transaction con filtro:" + transaction);
-            return transactionResponseMapper.convertEntityToDto(transaction);
+
+            // Validazione delle date
+            LocalDate startDate = filtroTransactionDTO.getStartDate();
+            LocalDate endDate = filtroTransactionDTO.getEndDate();
+            if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
+                throw new ServiceException("La data di inizio non può essere successiva alla data di fine.");
+            }
+
+            // Paginazione default
+            Paginazione paginazione;
+            if (filtroTransactionDTO.getPaginazione() == null) {
+                paginazione = new Paginazione();
+                paginazione.setNumeroPagina(0);
+                paginazione.setNumeroElementiPerPagina(10);
+            } else {
+                paginazione = Paginazione.builder()
+                        .numeroPagina(filtroTransactionDTO.getPaginazione().getNumeroPagina())
+                        .numeroElementiPerPagina(filtroTransactionDTO.getPaginazione().getNumeroElementiPerPagina())
+                        .build();
+            }
+
+            // Query dal repository
+            PanacheQuery<Transaction> panacheQuery = transactionRepository.ricercaTransaction(filtroTransactionDTO);
+
+            // Applica la paginazione alla query
+            panacheQuery.page(paginazione.getNumeroPagina(), paginazione.getNumeroElementiPerPagina());
+
+            // Calcolo metadati paginazione
+            paginazione.setNumeroRisTotali(panacheQuery.count());
+            paginazione.setNumeroPagTotali((int) Math.ceil((double) paginazione.getNumeroRisTotali() / paginazione.getNumeroElementiPerPagina()));
+
+            // Assemblaggio risposta
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setTransactions(panacheQuery.list());
+            transactionResponse.setPaginazione(paginazione);
+
+            log.info("[TransactionServiceImpl.ricerca] Risultato ricerca:" + transactionResponse);
+            return transactionResponseMapper.convertEntityToDto(transactionResponse);
+        } catch (ServiceException se) {
+            throw se;
         } catch (Exception ex) {
             log.error("[TransactionServiceImpl.ricerca] Errore durante la ricerca delle transactions", ex);
             throw new ServiceException(ex);
