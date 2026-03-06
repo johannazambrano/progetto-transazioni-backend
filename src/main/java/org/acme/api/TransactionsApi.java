@@ -3,7 +3,7 @@ package org.acme.api;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
@@ -20,7 +20,7 @@ import java.net.URI;
 @Path("/transactions")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@CommonsLog
+@Slf4j
 public class TransactionsApi {
 
     @Inject

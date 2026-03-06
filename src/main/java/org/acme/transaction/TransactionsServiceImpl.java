@@ -3,8 +3,9 @@ package org.acme.transaction;
 import io.quarkus.mongodb.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
+import org.acme.exception.BadRequestException;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
 import org.acme.transaction.dto.TransactionDTO;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @ApplicationScoped
-@CommonsLog
+@Slf4j
 public class TransactionsServiceImpl implements TransactionsService{
 
     @Inject
@@ -118,6 +119,8 @@ public class TransactionsServiceImpl implements TransactionsService{
             throw new NotFoundException("Transaction con id:" + id + " non trovato!");
         }catch(NotFoundException nfe){
             throw nfe;
+        }catch(IllegalArgumentException iae){
+            throw new BadRequestException("ID non valido: " + id);
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -135,6 +138,8 @@ public class TransactionsServiceImpl implements TransactionsService{
             }
         }catch(NotFoundException nfe){
             throw nfe;
+        }catch(IllegalArgumentException iae){
+            throw new BadRequestException("ID non valido: " + id);
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }

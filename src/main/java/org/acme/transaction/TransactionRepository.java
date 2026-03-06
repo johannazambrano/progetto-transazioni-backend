@@ -5,7 +5,7 @@ import com.mongodb.client.model.Updates;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.mongodb.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.api.dto.FiltroRicercaTransactionDTO;
 import org.acme.category.entity.Category;
 import org.acme.transaction.entity.Transaction;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
-@CommonsLog
+@Slf4j
 public class TransactionRepository implements PanacheMongoRepository<Transaction> {
 
     public void aggiornaCategoriaNelleTransactions(Category category) {

@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.category.CategoryService;
 import org.acme.category.dto.CategoryDTO;
 import org.acme.category.dto.CategoryResponse;
@@ -21,7 +21,7 @@ import java.net.URI;
 @Path("/categories")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@CommonsLog
+@Slf4j
 public class CategoryApi {
 
     @Inject

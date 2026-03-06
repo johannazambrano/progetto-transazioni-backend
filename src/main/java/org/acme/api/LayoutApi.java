@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.exception.ApplicationException;
 import org.acme.exception.ServiceException;
 import org.acme.layout.LayoutService;
@@ -21,7 +21,7 @@ import java.util.List;
 @Path("/layouts")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-@CommonsLog
+@Slf4j
 public class LayoutApi {
 
     @Inject
@@ -51,7 +51,7 @@ public class LayoutApi {
         return getAllLayouts();
     }
 
-    @POST
+    @GET
     @Path("/default")
     @Operation(summary = "Recupera il layout di default", description = "Restituisce il layout impostato come default")
     @APIResponses(value = {
@@ -59,10 +59,10 @@ public class LayoutApi {
             @APIResponse(responseCode = "404", description = "Nessun layout di default trovato"),
             @APIResponse(responseCode = "500", description = "Errore interno del server")
     })
-    public Response getDefaultLayout(@Valid FiltroDTO filtroDto) throws ApplicationException {
+    public Response getDefaultLayout(@QueryParam("layoutName") String layoutName, @QueryParam("isDefault") Boolean isDefault) throws ApplicationException {
         try {
             log.info("[LayoutApi.getDefaultLayout] recupero del layout di default");
-            //            LayoutDTO layout = layoutService.findDefaultLayout();
+            FiltroDTO filtroDto = FiltroDTO.builder().layoutName(layoutName).isDefault(isDefault).build();
             LayoutDTO layout = layoutService.findByFiltro(filtroDto);
             log.info("[LayoutApi.getDefaultLayout] recuperato layout di default con successo");
             return Response.ok(layout).build();
@@ -70,13 +70,6 @@ public class LayoutApi {
             throw new ApplicationException(e);
         }
     }
-
-//    @POST
-//    @Path("/reset")
-//    @Operation(summary = "Resetta al layout di default", description = "Restituisce il layout di default per l'utente")
-//    public Response resetLayout(FiltroDTO filtroDto) throws ApplicationException {
-//        return getDefaultLayout(filtroDto);
-//    }
 
     @GET
     @Path("/{id}")

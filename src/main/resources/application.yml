@@ -1,8 +1,9 @@
 "%prod":
   quarkus:
+    swagger-ui:
+      always-include: false
     mongodb:
       connection-string: mongodb://mongo:27017/expense-pulse
-      database: expense-pulse
 quarkus:
   application:
     name: expense-pulse-backend
@@ -28,7 +29,7 @@ quarkus:
       "org.acme":
         level: DEBUG
   mongodb:
-    connection-string: mongodb://localhost:27017
+    connection-string: ${MONGO_CONNECTION_STRING:mongodb://localhost:27017}
     database: expense-pulse
   swagger-ui:
     always-include: true

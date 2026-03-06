@@ -3,11 +3,11 @@ package org.acme.layout;
 import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.layout.entity.Layout;
 
 @ApplicationScoped
-@CommonsLog
+@Slf4j
 public class LayoutRepository implements PanacheMongoRepository<Layout> {
 
     public Layout findByLayoutName(String layoutName) {

@@ -2,7 +2,8 @@ package org.acme.layout;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
+import org.acme.exception.BadRequestException;
 import org.acme.exception.MapperException;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
@@ -15,7 +16,7 @@ import org.bson.types.ObjectId;
 import java.util.List;
 
 @ApplicationScoped
-@CommonsLog
+@Slf4j
 public class LayoutServiceImpl implements LayoutService {
 
     @Inject
@@ -52,6 +53,8 @@ public class LayoutServiceImpl implements LayoutService {
             return layoutMapper.convertEntityToDto(layout);
         } catch (NotFoundException nfe) {
             throw nfe;
+        } catch (IllegalArgumentException iae) {
+            throw new BadRequestException("ID non valido: " + id);
         } catch (Exception e) {
             log.error("Errore durante la ricerca del layout per ID ", e);
             throw new ServiceException("Errore durante la ricerca del layout per ID: " + e.getMessage(), e);
@@ -85,6 +88,8 @@ public class LayoutServiceImpl implements LayoutService {
             layoutRepository.update(updatedLayout);
         } catch (NotFoundException nfe) {
             throw nfe;
+        } catch (IllegalArgumentException iae) {
+            throw new BadRequestException("ID non valido: " + id);
         } catch (Exception e) {
             log.error("Errore durante l'aggiornamento del layout ", e);
             throw new ServiceException("Errore durante l'aggiornamento del layout: " + e.getMessage(), e);
@@ -101,6 +106,8 @@ public class LayoutServiceImpl implements LayoutService {
             }
         } catch (NotFoundException nfe) {
             throw nfe;
+        } catch (IllegalArgumentException iae) {
+            throw new BadRequestException("ID non valido: " + id);
         } catch (Exception e) {
             log.error("Errore durante la cancellazione del layout ", e);
             throw new ServiceException("Errore durante la cancellazione del layout: " + e.getMessage(), e);

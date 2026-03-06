@@ -4,10 +4,11 @@ import com.mongodb.MongoWriteException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.acme.category.dto.CategoryDTO;
 import org.acme.category.entity.Category;
 import org.acme.category.mapper.CategoryMapperImpl;
+import org.acme.exception.BadRequestException;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
 import org.acme.transaction.TransactionRepository;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-@CommonsLog
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
     @Inject
@@ -58,6 +59,8 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NotFoundException("Categoria con id:" + id + " non trovata");
         }catch(NotFoundException nfe){
             throw nfe;
+        }catch(IllegalArgumentException iae){
+            throw new BadRequestException("ID non valido: " + id);
         }catch(Exception e) {
             throw new ServiceException(e.getMessage(), e);
         }
@@ -118,6 +121,8 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NotFoundException("Categoria con id: " + id + " non trovata");
         }catch(NotFoundException nfe){
             throw nfe;
+        }catch(IllegalArgumentException iae){
+            throw new BadRequestException("ID non valido: " + id);
         }catch(MongoWriteException e){
         // codice standard di errore (11000) per gli errori di chiave duplicata in MongoDB
             if(e.getCode() == 11000) {
@@ -147,6 +152,8 @@ public class CategoryServiceImpl implements CategoryService {
             }
         }catch(NotFoundException nfe){
             throw nfe;
+        }catch(IllegalArgumentException iae){
+            throw new BadRequestException("ID non valido: " + id);
         }catch(Exception ex){
             throw new ServiceException(ex.getMessage(), ex);
         }
