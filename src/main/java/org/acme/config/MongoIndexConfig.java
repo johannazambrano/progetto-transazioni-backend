@@ -35,7 +35,7 @@ public class MongoIndexConfig {
         try {
             db.getCollection("TRANSACTION").dropIndex("idx_transaction_title");
         } catch (Exception ignored) {
-            // L'indice potrebbe non esistere al primo avvio
+            log.debug("Indice non presente, verra creato", ignored);
         }
         db.getCollection("TRANSACTION")
                 .createIndex(Indexes.text("title"), new IndexOptions().name("idx_transaction_title"));

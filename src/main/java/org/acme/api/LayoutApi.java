@@ -28,7 +28,7 @@ public class LayoutApi {
     LayoutService layoutService;
 
     @GET
-    @Path("/")
+    @Path("/all")
     @Operation(summary = "Recupera tutti i layout", description = "Restituisce una lista di tutti i layout disponibili")
     @APIResponses(value = {
             @APIResponse(responseCode = "200", description = "Lista layout recuperata con successo"),
@@ -42,13 +42,6 @@ public class LayoutApi {
         } catch (ServiceException e) {
             throw new ApplicationException(e);
         }
-    }
-
-    @GET
-    @Path("/all")
-    @Operation(summary = "Recupera tutti i layout (alias)", description = "Restituisce una lista di tutti i layout disponibili")
-    public Response getAllLayoutsAlias() throws ApplicationException {
-        return getAllLayouts();
     }
 
     @GET

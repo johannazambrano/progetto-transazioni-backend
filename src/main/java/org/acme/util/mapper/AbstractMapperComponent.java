@@ -16,7 +16,7 @@ public abstract class AbstractMapperComponent<T, E> implements MapperComponent<T
         if (entityList != null) {
             for (E entity : entityList) {
                 T dto = convertEntityToDto(entity);
-                dtoList.add(dto);
+                if (dto != null) dtoList.add(dto);
             }
         }
         return dtoList;
@@ -28,7 +28,7 @@ public abstract class AbstractMapperComponent<T, E> implements MapperComponent<T
         if (dtoList != null) {
             for (T dto : dtoList) {
                 E entity = convertDtoToEntity(dto);
-                entityList.add(entity);
+                if (entity != null) entityList.add(entity);
             }
         }
         return entityList;

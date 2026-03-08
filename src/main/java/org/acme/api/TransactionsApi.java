@@ -79,7 +79,7 @@ public class TransactionsApi {
                             responseCode = "500",
                             description = "Internal Server Error"),
                     @APIResponse(
-                            responseCode = "200",
+                            responseCode = "204",
                             description = "Transaction aggiornata con successo"
                     )
             }
@@ -102,6 +102,17 @@ public class TransactionsApi {
         }
     }
 
+    @APIResponses(
+            value = {
+                    @APIResponse(
+                            responseCode = "500",
+                            description = "Internal Server Error"),
+                    @APIResponse(
+                            responseCode = "204",
+                            description = "Transaction cancellata con successo"
+                    )
+            }
+    )
     @Operation(summary = "Endpoint per la cancellazione di una transaction",
             description = "Cancella una transaction sul sistema dato un id")
     @DELETE

@@ -59,7 +59,7 @@ public class CategoryApi {
                             responseCode = "500",
                             description = "Internal Server Error"),
                     @APIResponse(
-                            responseCode = "200",
+                            responseCode = "201",
                             description = "Categoria creata con successo"
                     )
             }
@@ -86,7 +86,7 @@ public class CategoryApi {
                             responseCode = "500",
                             description = "Internal Server Error"),
                     @APIResponse(
-                            responseCode = "200",
+                            responseCode = "204",
                             description = "Category aggiornata con successo"
                     )
             }
