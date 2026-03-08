@@ -18,6 +18,6 @@ public class Layout {
     private String layoutName;
     private List<LayoutItem> layoutItems;
     private LocalDateTime updatedAt;
-    private boolean isDefault = false;
+    private Boolean isDefault = false;
 
 }
