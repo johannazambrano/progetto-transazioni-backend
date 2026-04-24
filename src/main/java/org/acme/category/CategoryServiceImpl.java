@@ -1,17 +1,22 @@
 package org.acme.category;
 
 import com.mongodb.MongoWriteException;
+import io.quarkus.mongodb.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
+import org.acme.api.dto.FiltroRicercaCategoryDTO;
+import org.acme.api.dto.PaginazioneDTO;
 import org.acme.category.dto.CategoryDTO;
+import org.acme.category.dto.CategoryResponseDTO;
 import org.acme.category.entity.Category;
 import org.acme.category.mapper.CategoryMapperImpl;
 import org.acme.exception.BadRequestException;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
 import org.acme.transaction.TransactionRepository;
+import org.acme.util.entity.Paginazione;
 import org.bson.types.ObjectId;
 
 import java.util.List;
@@ -155,6 +160,59 @@ public class CategoryServiceImpl implements CategoryService {
         }catch(IllegalArgumentException iae){
             throw new BadRequestException("ID non valido: " + id);
         }catch(Exception ex){
+            throw new ServiceException(ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public CategoryResponseDTO elencoConPaginazione(FiltroRicercaCategoryDTO filtro) throws ServiceException {
+        try {
+            log.info("[CategoryServiceImpl.elencoConPaginazione] Ricerca categorie con filtro: " + filtro);
+
+            // Paginazione default
+            Paginazione paginazione;
+            if (filtro.getPaginazione() == null) {
+                paginazione = new Paginazione();
+                paginazione.setNumeroPagina(0);
+                paginazione.setNumeroElementiPerPagina(10);
+            } else {
+                paginazione = Paginazione.builder()
+                        .numeroPagina(filtro.getPaginazione().getNumeroPagina())
+                        .numeroElementiPerPagina(filtro.getPaginazione().getNumeroElementiPerPagina())
+                        .build();
+            }
+
+            // Query dal repository
+            PanacheQuery<Category> panacheQuery = categoryRepository.ricercaCategoria(filtro);
+
+            // Count prima della paginazione
+            long totalCount = panacheQuery.count();
+            paginazione.setNumeroRisTotali(totalCount);
+            paginazione.setNumeroPagTotali((int) Math.ceil((double) totalCount / paginazione.getNumeroElementiPerPagina()));
+
+            // Assemblaggio risposta
+            CategoryResponseDTO response = new CategoryResponseDTO();
+            if (totalCount > 0) {
+                panacheQuery.page(paginazione.getNumeroPagina(), paginazione.getNumeroElementiPerPagina());
+                response.setCategories(categoryMapper.convertEntityToDto(panacheQuery.list()));
+            } else {
+                response.setCategories(java.util.List.of());
+            }
+
+            // Converti Paginazione entity a DTO
+            PaginazioneDTO paginazioneDTO = PaginazioneDTO.builder()
+                    .numeroPagina(paginazione.getNumeroPagina())
+                    .risultatiPagina(paginazione.getRisultatiPagina())
+                    .numeroPagTotali(paginazione.getNumeroPagTotali())
+                    .numeroRisTotali(paginazione.getNumeroRisTotali())
+                    .numeroElementiPerPagina(paginazione.getNumeroElementiPerPagina())
+                    .build();
+            response.setPaginazione(paginazioneDTO);
+
+            log.info("[CategoryServiceImpl.elencoConPaginazione] Risultato ricerca: " + response);
+            return response;
+        } catch (Exception ex) {
+            log.error("[CategoryServiceImpl.elencoConPaginazione] Errore durante la ricerca delle categorie", ex);
             throw new ServiceException(ex.getMessage(), ex);
         }
     }

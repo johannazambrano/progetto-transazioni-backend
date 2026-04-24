@@ -6,9 +6,11 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.acme.api.dto.FiltroRicercaCategoryDTO;
 import org.acme.category.CategoryService;
 import org.acme.category.dto.CategoryDTO;
 import org.acme.category.dto.CategoryResponse;
+import org.acme.category.dto.CategoryResponseDTO;
 import org.acme.exception.ApplicationException;
 import org.acme.exception.NotFoundException;
 import org.acme.exception.ServiceException;
@@ -44,10 +46,10 @@ public class CategoryApi {
     public Response elencoCategories() throws ApplicationException {
         try{
             log.info("[CategoryApi.elencoCategories] Recupero dell'elenco delle categorie");
-            CategoryResponse categories = new CategoryResponse();
-            categories.setCategories(categoryService.elenco());
+            CategoryResponseDTO response = new CategoryResponseDTO();
+            response.setCategories(categoryService.elenco());
             log.info("[CategoryApi.elencoCategories] Recuperato l'elenco delle categorie");
-            return Response.ok(categories).build();
+            return Response.ok(response).build();
         }catch (ServiceException e){
             throw new ApplicationException(e);
         }
@@ -134,6 +136,31 @@ public class CategoryApi {
             throw nfe;
         }catch(Exception ex){
             throw new ApplicationException(ex);
+        }
+    }
+
+    @APIResponses(
+            value = {
+                    @APIResponse(
+                            responseCode = "200",
+                            description = "Lista categorie recuperata con successo"),
+                    @APIResponse(
+                            responseCode = "500",
+                            description = "Internal Server error")
+            })
+    @Operation(
+            summary = "Endpoint per la ricerca delle categorie con paginazione",
+            description = "Ricerca categorie con filtri e paginazione")
+    @POST
+    @Path("/ricerca")
+    public Response ricercaCategories(@Valid FiltroRicercaCategoryDTO filtro) throws ApplicationException {
+        try{
+            log.info("[CategoryApi.ricercaCategories] Ricerca categorie con filtro: " + filtro);
+            CategoryResponseDTO response = categoryService.elencoConPaginazione(filtro);
+            log.info("[CategoryApi.ricercaCategories] Recuperato l'elenco delle categorie");
+            return Response.ok(response).build();
+        }catch (ServiceException e){
+            throw new ApplicationException(e);
         }
     }
 }

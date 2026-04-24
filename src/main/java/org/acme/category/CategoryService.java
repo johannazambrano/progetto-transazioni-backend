@@ -1,6 +1,8 @@
 package org.acme.category;
 
+import org.acme.api.dto.FiltroRicercaCategoryDTO;
 import org.acme.category.dto.CategoryDTO;
+import org.acme.category.dto.CategoryResponseDTO;
 import org.acme.exception.ServiceException;
 
 import java.util.List;
@@ -17,4 +19,6 @@ public interface CategoryService {
     void aggiornaCategory(String id, CategoryDTO categoryDTO) throws ServiceException;
 
     void cancella(String id) throws ServiceException;
+
+    CategoryResponseDTO elencoConPaginazione(FiltroRicercaCategoryDTO filtro) throws ServiceException;
 }
