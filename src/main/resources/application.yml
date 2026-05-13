@@ -3,7 +3,7 @@
     swagger-ui:
       always-include: false
     mongodb:
-      connection-string: mongodb://mongo:27017/expense-pulse
+      connection-string: ${QUARKUS_MONGODB_CONNECTION_STRING:mongodb://mongo:27017/expense-pulse}
 quarkus:
   application:
     name: expense-pulse-backend
@@ -13,7 +13,7 @@ quarkus:
     root-path: /api/v1
     cors:
       enabled: true
-      origins: http://localhost:4200,http://localhost:5173,http://127.0.0.1:5173
+      origins: ${QUARKUS_CORS_ORIGINS:http://localhost:4200,http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174}
       methods: GET,PUT,POST,DELETE,OPTIONS,PATCH
       headers: origin,accept,authorization,content-type,x-requested-with
       exposed-headers: Content-Disposition
@@ -29,7 +29,7 @@ quarkus:
       "org.acme":
         level: DEBUG
   mongodb:
-    connection-string: ${MONGO_CONNECTION_STRING:mongodb://localhost:27017}
+    connection-string: ${QUARKUS_MONGODB_CONNECTION_STRING:mongodb://localhost:27017}
     database: expense-pulse
   swagger-ui:
     always-include: true

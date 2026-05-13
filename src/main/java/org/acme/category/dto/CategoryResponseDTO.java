@@ -1,5 +1,7 @@
 package org.acme.category.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoryResponseDTO {
+    @Valid
     private List<CategoryDTO> categories;
+    @NotNull
     private PaginazioneDTO paginazione;
 }

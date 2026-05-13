@@ -1,0 +1,243 @@
+[{
+  "_id": {
+    "$oid": "65f1a2b3c4d5e6f7a8b9c001"
+  },
+  "isDefault": true,
+  "layoutItems": [
+    {
+      "h": 3,
+      "i": "balance",
+      "maxH": 3,
+      "maxW": 8,
+      "minH": 3,
+      "minW": 4,
+      "staticLayout": false,
+      "w": 4,
+      "x": 3,
+      "y": 0
+    },
+    {
+      "h": 9,
+      "i": "expenseChart",
+      "maxH": 12,
+      "maxW": 6,
+      "minH": 5,
+      "minW": 4,
+      "staticLayout": false,
+      "w": 4,
+      "x": 2,
+      "y": 22
+    },
+    {
+      "h": 9,
+      "i": "timeChart",
+      "maxH": 12,
+      "maxW": 12,
+      "minH": 9,
+      "minW": 5,
+      "staticLayout": false,
+      "w": 5,
+      "x": 6,
+      "y": 22
+    },
+    {
+      "h": 5,
+      "i": "transactionForm",
+      "maxH": 5,
+      "maxW": 12,
+      "minH": 5,
+      "minW": 8,
+      "staticLayout": false,
+      "w": 8,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "h": 4,
+      "i": "researchTable",
+      "maxH": 8,
+      "maxW": 12,
+      "minH": 3,
+      "minW": 8,
+      "staticLayout": false,
+      "w": 8,
+      "x": 3,
+      "y": 8
+    },
+    {
+      "h": 10,
+      "i": "transactionHistory",
+      "maxH": 15,
+      "maxW": 12,
+      "minH": 4,
+      "minW": 6,
+      "staticLayout": false,
+      "w": 8,
+      "x": 3,
+      "y": 12
+    }
+  ],
+  "layoutName": "DEFAULT_LAYOUT_HOME"
+},
+{
+  "_id": {
+    "$oid": "65f1a2b3c4d5e6f7a8b9c002"
+  },
+  "isDefault": true,
+  "layoutItems": [
+    {
+      "h": 4,
+      "i": "stats",
+      "maxH": 12,
+      "maxW": 12,
+      "minH": 4,
+      "minW": 10,
+      "staticLayout": false,
+      "w": 10,
+      "x": 2,
+      "y": 4
+    },
+    {
+      "h": 4,
+      "i": "form",
+      "maxH": 10,
+      "maxW": 12,
+      "minH": 4,
+      "minW": 8,
+      "staticLayout": false,
+      "w": 8,
+      "x": 4,
+      "y": 0
+    },
+    {
+      "h": 10,
+      "i": "table",
+      "maxH": 12,
+      "maxW": 12,
+      "minH": 8,
+      "minW": 6,
+      "staticLayout": false,
+      "w": 12,
+      "x": 0,
+      "y": 8
+    }
+  ],
+  "layoutName": "DEFAULT_LAYOUT_CATEGORIES"
+},
+{
+  "_id": {
+    "$oid": "69d8fe591c3184e9c0409fca"
+  },
+  "isDefault": false,
+  "layoutItems": [
+    {
+      "h": 3,
+      "i": "balance",
+      "maxH": 3,
+      "maxW": 8,
+      "minH": 3,
+      "minW": 4,
+      "w": 8,
+      "x": 2,
+      "y": 0
+    },
+    {
+      "h": 9,
+      "i": "expenseChart",
+      "maxH": 12,
+      "maxW": 6,
+      "minH": 5,
+      "minW": 4,
+      "w": 4,
+      "x": 2,
+      "y": 3
+    },
+    {
+      "h": 9,
+      "i": "timeChart",
+      "maxH": 12,
+      "maxW": 12,
+      "minH": 9,
+      "minW": 4,
+      "w": 4,
+      "x": 6,
+      "y": 3
+    },
+    {
+      "h": 6,
+      "i": "transactionForm",
+      "maxH": 7,
+      "maxW": 12,
+      "minH": 5,
+      "minW": 5,
+      "w": 8,
+      "x": 2,
+      "y": 12
+    },
+    {
+      "h": 6,
+      "i": "researchTable",
+      "maxH": 8,
+      "maxW": 12,
+      "minH": 4,
+      "minW": 5,
+      "w": 8,
+      "x": 2,
+      "y": 18
+    },
+    {
+      "h": 15,
+      "i": "transactionHistory",
+      "maxH": 15,
+      "maxW": 12,
+      "minH": 8,
+      "minW": 4,
+      "w": 8,
+      "x": 2,
+      "y": 24
+    }
+  ],
+  "layoutName": "HomeView"
+},
+{
+  "_id": {
+    "$oid": "69d8fe681c3184e9c0409fcc"
+  },
+  "isDefault": false,
+  "layoutItems": [
+    {
+      "h": 3,
+      "i": "stats",
+      "maxH": 12,
+      "maxW": 12,
+      "minH": 3,
+      "minW": 5,
+      "w": 6,
+      "x": 3,
+      "y": 0
+    },
+    {
+      "h": 5,
+      "i": "form",
+      "maxH": 10,
+      "maxW": 12,
+      "minH": 4,
+      "minW": 5,
+      "w": 6,
+      "x": 3,
+      "y": 3
+    },
+    {
+      "h": 12,
+      "i": "table",
+      "maxH": 12,
+      "maxW": 12,
+      "minH": 8,
+      "minW": 5,
+      "w": 6,
+      "x": 3,
+      "y": 8
+    }
+  ],
+  "layoutName": "CategoriesView"
+}]

@@ -1,5 +1,7 @@
 package org.acme.transaction.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +15,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class TransactionResponseDTO {
-    List<TransactionDTO> transactions;
-    PaginazioneDTO paginazione;
+    @Valid
+    private List<TransactionDTO> transactions;
+    @NotNull
+    private PaginazioneDTO paginazione;
 }
