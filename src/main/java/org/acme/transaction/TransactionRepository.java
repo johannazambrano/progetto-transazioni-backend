@@ -41,9 +41,10 @@ public class TransactionRepository implements PanacheMongoRepository<Transaction
 
         Document filter = new Document();
 
-        // Text search per title (usa text index, no full collection scan)
+        // Ricerca parziale case-insensitive sul titolo
         if (title != null && !title.isBlank()) {
-            filter.append("$text", new Document("$search", title));
+            String escaped = Pattern.quote(title);
+            filter.append("title", new Document("$regex", escaped).append("$options", "i"));
         }
 
         // Gestione range date
