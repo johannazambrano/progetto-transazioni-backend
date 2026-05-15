@@ -75,10 +75,6 @@ public class LayoutApi {
     public Response getLayoutById(@PathParam("id") String id) throws ApplicationException {
         try {
             log.info("[LayoutApi.getLayoutById] Id ricevuto: " + id);
-            // TODO: da rivedere questa logica, non mi torna
-//            if ("default".equals(id)) {
-//                return getDefaultLayout();
-//            }
             LayoutDTO layout = layoutService.findLayoutById(id);
             return Response.ok(layout).build();
         } catch (ServiceException e) {
