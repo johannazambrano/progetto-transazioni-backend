@@ -28,7 +28,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public LayoutDTO findLayoutByName(String name) throws ServiceException {
         try {
-            log.info("Ricerca layout per nome: " + name);
+            log.info("[LayoutServiceImpl.findLayoutByName] Ricerca layout per nome: " + name);
             Layout layout = layoutRepository.findByLayoutName(name);
             if (layout == null) {
                 throw new NotFoundException("Layout con nome " + name + " non trovato.");
@@ -37,7 +37,7 @@ public class LayoutServiceImpl implements LayoutService {
         } catch (NotFoundException nfe) {
             throw nfe;
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del layout per nome ", e);
+            log.error("[LayoutServiceImpl.findLayoutByName] Errore durante la ricerca del layout per nome ", e);
             throw new ServiceException("Errore durante la ricerca del layout per nome: " + e.getMessage(), e);
         }
     }
@@ -45,7 +45,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public LayoutDTO findLayoutById(String id) throws ServiceException {
         try {
-            log.info("Ricerca layout per ID: " + id);
+            log.info("[LayoutServiceImpl.findLayoutById] Ricerca layout per ID: " + id);
             Layout layout = layoutRepository.findById(new ObjectId(id));
             if (layout == null) {
                 throw new NotFoundException("Layout con ID " + id + " non trovato.");
@@ -56,7 +56,7 @@ public class LayoutServiceImpl implements LayoutService {
         } catch (IllegalArgumentException iae) {
             throw new BadRequestException("ID non valido: " + id);
         } catch (Exception e) {
-            log.error("Errore durante la ricerca del layout per ID ", e);
+            log.error("[LayoutServiceImpl.findLayoutById] Errore durante la ricerca del layout per ID ", e);
             throw new ServiceException("Errore durante la ricerca del layout per ID: " + e.getMessage(), e);
         }
     }
@@ -64,12 +64,12 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public String createLayout(LayoutDTO layoutDTO) throws ServiceException {
         try {
-            log.info("Creazione nuovo layout");
+            log.info("[LayoutServiceImpl.createLayout] Creazione nuovo layout");
             Layout layout = layoutMapper.convertDtoToEntity(layoutDTO);
             layoutRepository.persist(layout);
             return layout.getId().toHexString();
         } catch (Exception e) {
-            log.error("Errore durante la creazione del layout ", e);
+            log.error("[LayoutServiceImpl.createLayout] Errore durante la creazione del layout ", e);
             throw new ServiceException("Errore durante la creazione del layout: " + e.getMessage(), e);
         }
     }
@@ -77,7 +77,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public void updateLayout(String id, LayoutDTO layoutDTO) throws ServiceException {
         try {
-            log.info("Aggiornamento layout con id: " + id);
+            log.info("[LayoutServiceImpl.updateLayout] Aggiornamento layout con id: " + id);
             Layout existingLayout = layoutRepository.findById(new ObjectId(id));
             if (existingLayout == null) {
                 throw new NotFoundException("Layout con id " + id + " non trovato.");
@@ -91,7 +91,7 @@ public class LayoutServiceImpl implements LayoutService {
         } catch (IllegalArgumentException iae) {
             throw new BadRequestException("ID non valido: " + id);
         } catch (Exception e) {
-            log.error("Errore durante l'aggiornamento del layout ", e);
+            log.error("[LayoutServiceImpl.updateLayout] Errore durante l'aggiornamento del layout ", e);
             throw new ServiceException("Errore durante l'aggiornamento del layout: " + e.getMessage(), e);
         }
     }
@@ -99,7 +99,7 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public void deleteLayout(String id) throws ServiceException {
         try {
-            log.info("Cancellazione layout con id: " + id);
+            log.info("[LayoutServiceImpl.deleteLayout] Cancellazione layout con id: " + id);
             boolean deleted = layoutRepository.deleteById(new ObjectId(id));
             if (!deleted) {
                 throw new NotFoundException("Layout con id " + id + " non trovato.");
@@ -109,7 +109,7 @@ public class LayoutServiceImpl implements LayoutService {
         } catch (IllegalArgumentException iae) {
             throw new BadRequestException("ID non valido: " + id);
         } catch (Exception e) {
-            log.error("Errore durante la cancellazione del layout ", e);
+            log.error("[LayoutServiceImpl.deleteLayout] Errore durante la cancellazione del layout ", e);
             throw new ServiceException("Errore durante la cancellazione del layout: " + e.getMessage(), e);
         }
     }
@@ -117,11 +117,11 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public List<LayoutDTO> getAllLayouts() throws ServiceException {
         try {
-            log.info("Recupero di tutti i layout");
+            log.info("[LayoutServiceImpl.getAllLayouts] Recupero di tutti i layout");
             List<Layout> layouts = layoutRepository.listAll();
             return layoutMapper.convertEntityToDto(layouts);
         } catch (Exception e) {
-            log.error("Errore durante il recupero di tutti i layout ", e);
+            log.error("[LayoutServiceImpl.getAllLayouts] Errore durante il recupero di tutti i layout ", e);
             throw new ServiceException("Errore durante il recupero di tutti i layout: " + e.getMessage(), e);
         }
     }
@@ -129,18 +129,18 @@ public class LayoutServiceImpl implements LayoutService {
     @Override
     public LayoutDTO findByFiltro(FiltroDTO filtroDto) throws ServiceException {
         try {
-            log.info("[LayoutServiceImpl.findDefaultLayout] Ricerca layout di default");
+            log.info("[LayoutServiceImpl.findByFiltro] Ricerca layout di default");
             Layout layout = layoutRepository.findByFilters(filtroDto.getLayoutName(), filtroDto.getIsDefault());
             if (layout != null) {
                 return layoutMapper.convertEntityToDto(layout);
             }
-            log.info("[LayoutServiceImpl.findDefaultLayout] Layout di default non trovato");
+            log.info("[LayoutServiceImpl.findByFiltro] Layout di default non trovato");
             throw new NotFoundException("Layout con nome: " + filtroDto.getLayoutName() + " non trovato");
         } catch(NotFoundException nfe){
             throw nfe;
         }catch (Exception e) {
-            log.error("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default ", e);
-            throw new ServiceException("[LayoutServiceImpl.findDefaultLayout] Errore durante la ricerca del layout di default: " + e.getMessage(), e);
+            log.error("[LayoutServiceImpl.findByFiltro] Errore durante la ricerca del layout di default ", e);
+            throw new ServiceException("[LayoutServiceImpl.findByFiltro] Errore durante la ricerca del layout di default: " + e.getMessage(), e);
         }
     }
 }
